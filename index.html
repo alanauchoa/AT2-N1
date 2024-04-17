@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Gastos</title>
+</head>
+<body>
+    <h1>Cadastro de Gastos</h1>
+
+    <label for="categoria">Categoria:</label>
+    <select id="categoria">
+        <option value="alimentacao">Alimentação</option>
+        <option value="transporte">Transporte</option>
+        <option value="moradia">Moradia</option>
+        <option value="entretenimento">Entretenimento</option>
+    </select><br>
+
+    <label for="descricao">Descrição:</label>
+    <input type="text" id="descricao"><br>
+
+    <label for="valor">Valor:</label>
+    <input type="number" id="valor"><br>
+
+    <button onclick="adicionarGasto()">Adicionar Gasto</button>
+    <button onclick="listarGastos()">Listar Gastos</button>
+    <br><br>
+
+    <label for="buscaCategoria">Buscar por Categoria:</label>
+    <select id="buscaCategoria">
+        <option value="alimentacao">Alimentação</option>
+        <option value="transporte">Transporte</option>
+        <option value="moradia">Moradia</option>
+        <option value="entretenimento">Entretenimento</option>
+    </select>
+    <button onclick="buscarPorCategoria()">Buscar</button>
+
+    <div id="listaGastos"></div>
+
+    <script>
+        let gastos = [];
+
+        function adicionarGasto() {
+            const categoria = document.getElementById("categoria").value;
+            const descricao = document.getElementById("descricao").value;
+            const valor = parseFloat(document.getElementById("valor").value);
+
+            if (descricao && !isNaN(valor)) {
+                gastos.push({ categoria, descricao, valor });
+                document.getElementById("descricao").value = "";
+                document.getElementById("valor").value = "";
+                alert("Gasto adicionado com sucesso!");
+            } else {
+                alert("Por favor, preencha todos os campos corretamente.");
+            }
+        }
+
+        function listarGastos() {
+            let listaGastosHTML = "<h2>Listagem de Gastos</h2>";
+            const categorias = ["alimentacao", "transporte", "moradia", "entretenimento"];
+
+            categorias.forEach(categoria => {
+                listaGastosHTML += `<h3>${categoria.charAt(0).toUpperCase() + categoria.slice(1)}</h3>`;
+                const gastosCategoria = gastos.filter(gasto => gasto.categoria === categoria);
+                if (gastosCategoria.length > 0) {
+                    listaGastosHTML += "<ul>";
+                    gastosCategoria.forEach(gasto => {
+                        listaGastosHTML += `<li>${gasto.descricao} - R$ ${gasto.valor.toFixed(2)}</li>`;
+                    });
+                    listaGastosHTML += "</ul>";
+                } else {
+                    listaGastosHTML += "<p>Sem gastos nesta categoria.</p>";
+                }
+            });
+
+            document.getElementById("listaGastos").innerHTML = listaGastosHTML;
+        }
+
+        function buscarPorCategoria() {
+            const categoriaSelecionada = document.getElementById("buscaCategoria").value;
+            const gastosCategoria = gastos.filter(gasto => gasto.categoria === categoriaSelecionada);
+
+            let listaGastosHTML = "<h2>Gastos da Categoria Selecionada</h2>";
+            if (gastosCategoria.length > 0) {
+                listaGastosHTML += "<ul>";
+                gastosCategoria.forEach(gasto => {
+                    listaGastosHTML += `<li>${gasto.descricao} - R$ ${gasto.valor.toFixed(2)}</li>`;
+                });
+                listaGastosHTML += "</ul>";
+            } else {
+                listaGastosHTML += "<p>Nenhum gasto nesta categoria.</p>";
+            }
+
+            document.getElementById("listaGastos").innerHTML = listaGastosHTML;
+        }
+    </script>
+</body>
+</html>
